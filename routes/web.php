@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApplicationContoler;
-
+use App\Http\Controllers\TablesController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,5 +21,9 @@ Route::get('/', function () {
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // });
+Route::get('/api/users', [TablesController::class,'index']);
+Route::post('/api/users', [TablesController::class,'store']);
+
+Route::put('/api/users/{user}', [TablesController::class,'update']);
 
 Route::get('{view}', ApplicationContoler::class)->where('view','(.*)');
