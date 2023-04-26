@@ -1,39 +1,31 @@
 <script setup>
 import axios from 'axios'
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted, reactive, watch } from 'vue';
 import {Form, Field } from 'vee-validate'
 import moment from 'moment';
 import * as yup from 'yup';
-import { useToastr } from '../toastr'
+import { useToastr } from '../toastr';
+import { debounce } from 'lodash';
+import { Bootstrap4Pagination } from 'laravel-vue-pagination';
 
-// const users = [{
-//     id:1,
-//     name:'John Doe',
-//     email:'john@example.com',
-//     },
-
-//     {
-//     id:2,
-//     name:'Jane Doe',
-//     email:'jane@example.com',}
-// ];
-const users =ref([]);
+const users =ref({'data': []});
 const editing = ref(false);
 const formValues = ref();
 const form = ref(null);
 const toastr = useToastr();
-// const toastr = useToastr;
+const userIdBeingDeleted = ref(null);
+const searchQuery = ref(null)
 
-// const form = reactive({
-//     name:'',
-//     email:'',
-//     password:'',
-// });
 
-const getUsers = () => {
-    axios.get('/api/users')
+const getUsers = (page = 1) => {
+    axios.get(`/api/users?page=${page}`, {
+        params: {
+            query: searchQuery.value
+        }
+    })
     .then((response) => {
         users.value = response.data;
+        
     })
 }
 
@@ -49,8 +41,7 @@ const editUserSchema = yup.object({
 name: yup.string().required(),
 email: yup.string().email().required(),
 password:yup.string().when((password,schema) =>{
-
-    return password ? schema.min(8) : schema;
+     return password ? schema.min(8) : schema;
 }),
 
 }); 
@@ -73,7 +64,6 @@ const addUser = () =>{
 
 const editUser = (user) => {
     form.value.resetForm();
-    // this.$refs.form.resetForm();
     editing.value = true;
     $('#userFormModal').modal('show');
     formValues.value = {
@@ -105,16 +95,38 @@ const handleSubmit = (values) => {
         createUser(values);
     }
 }
-// const createUser = () => {
-//     axios.post('/api/users',form)
-//     .then((response)=> {
-//         users.value.push(response.data);
-//         form.name = '',
-//         form.email = '',
-//         form.password = '',
-//         $('#userFormModal').modal('hide'); 
-//     });
+
+const confirmUserDeletion = (user) => {
+    userIdBeingDeleted.value = user.id;
+    $('#deleteUserModal').modal('show');
+}
+
+const deleteUser = () => {
+    axios.delete(`/api/users/${userIdBeingDeleted.value}`)
+    .then(() =>{
+        $('#deleteUserModal').modal('hide');
+        users.value = users.value.filter(user => user.id !== userIdBeingDeleted.value);
+        toastr.success('User deleted sucessfully!');
+    });
+}
+
+// const search = () => {
+//     axios.get('/api/users/search', {
+//         params: {
+//             query: searchQuery.value
+//         }
+//     })
+//     .then(response => {
+//         users.value = response.data;
+//     })
+//     .catch(error => {
+//         console.log(error);
+//     })
 // }
+
+watch(searchQuery, debounce(() => {
+    getUsers();
+}, 300));
 
 onMounted(() => {
     getUsers();
@@ -145,10 +157,16 @@ onMounted(() => {
      <div class="content">
         <div class="container-fluid">
             <!-- Button trigger modal -->
-            <button @click="addUser" type="button" class="mb-2 btn btn-primary">
-                Add New User
-            </button>
-            <div class="card">
+            <div class="d-flex justify-content-between">
+                <button @click="addUser" type="button" class="mb-2 btn btn-primary">
+                    Add New User
+                </button>
+                <div>
+                    <input type="text" v-model="searchQuery" class="form-control" placeholder="Search...."/> 
+                </div>
+            </div>
+            <div class=
+            "card">
                 <div class="card-body">
                     <table class="table table-bordered">
                         <thead>
@@ -161,8 +179,8 @@ onMounted(() => {
                                 <th>Options</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr v-for="(user,index) in users" :key="user.id">
+                        <tbody v-if="users.data.length > 0 ">
+                            <tr v-for="(user,index) in users.data" :key="user.id">
                                 <td>{{index +1 }}</td>
                                 <td>{{user.name}}</td>
                                 <td>{{user.email}}</td>
@@ -170,12 +188,23 @@ onMounted(() => {
                                 <td>User</td>
                                 <td>
                                     <a href="#" @click.prevent="editUser(user)"><i class="fa fa-edit"></i></a>
+                                    <a href="#" @click.prevent="confirmUserDeletion(user)"><i class="fa fa-trash text-danger ml-2"></i></a>
                                 </td> 
                             </tr>
                         </tbody>
+                        <tbody v-else>
+                            <tr>
+                                <td colspan="6" class="text-center">No results found...</td>
+                            </tr>
+                        </tbody>
                     </table>
+                        <Bootstrap4Pagination
+                            :data="users"
+                            @pagination-change-page="getUsers"
+                        />
                 </div>
             </div>
+            
         </div>
      </div>
  
@@ -226,4 +255,26 @@ onMounted(() => {
             </div>
         </div>
     </div>
- </template>
+    <div class="modal fade" id="deleteUserModal" data-backdrop="static" tabindex="-1" role="dialog"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">
+                        <span>Delete User</span>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h5>Are you sure you want to delete this user?</h5>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button @click.prevent="deleteUser" type="button" class="btn btn-danger">Delete User</button>
+                </div>
+            </div>
+        </div>
+    </div>
+ </template> 
