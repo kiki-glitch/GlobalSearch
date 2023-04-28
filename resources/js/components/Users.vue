@@ -8,7 +8,7 @@ import { useToastr } from '../toastr';
 import { debounce } from 'lodash';
 import { Bootstrap4Pagination } from 'laravel-vue-pagination';
 
-const users =ref({'data': []});
+const users = ref({'data': []});
 const editing = ref(false);
 const formValues = ref();
 const form = ref(null);
@@ -165,8 +165,7 @@ onMounted(() => {
                     <input type="text" v-model="searchQuery" class="form-control" placeholder="Search...."/> 
                 </div>
             </div>
-            <div class=
-            "card">
+            <div class="card">
                 <div class="card-body">
                     <table class="table table-bordered">
                         <thead>

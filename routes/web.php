@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApplicationContoler;
+use App\Http\Controllers\AuthContoller;
 use App\Http\Controllers\TablesController;
 /*
 |--------------------------------------------------------------------------
@@ -16,8 +17,12 @@ use App\Http\Controllers\TablesController;
 
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('login');
+})->name('login');
+
+Route::get('/register', function () {
+    return view('login');
+})->name('register');
 
 Route::get('/api/users', [TablesController::class,'index']);
 Route::post('/api/users', [TablesController::class,'store']);
@@ -25,6 +30,9 @@ Route::post('/api/users', [TablesController::class,'store']);
 Route::put('/api/users/{user}', [TablesController::class,'update']);
 Route::delete('/api/users/{user}', [TablesController::class,'destroy']);
 
-// Route::get('/api/users/search', [TablesController::class,'search']);
+Route::get('/api/search', [TablesController::class,'search']);
 
 Route::get('{view}', ApplicationContoler::class)->where('view','(.*)');
+
+Route::get('/login', AuthController::class,'login');
+Route::get('/register', AuthController::class,'register');
