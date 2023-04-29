@@ -15,26 +15,47 @@
 <a href="#"><b>Admin</b>LTE</a>
 </div>
 
-<!-- <div class="card">
+<div class="card">
 <div class="card-body login-card-body">
 <p class="login-box-msg">Sign in to start your session</p>
-<form action="../../index3.html" method="post">
+<form action="{{ route('login') }}" method="post">
+    @csrf
+    @if (session('status'))
+
+        <div class="invalid feedback text-red text-center">	
+        {{ session('status')}}
+        </div>
+	@endif
 <div class="input-group mb-3">
-<input type="email" class="form-control" placeholder="Email">
+<input name="email" id="email" type="email" class="form-control" placeholder="Email">
 <div class="input-group-append">
 <div class="input-group-text">
 <span class="fas fa-envelope"></span>
 </div>
 </div>
 </div>
+        @error('email')
+            <span class="text-red invalid feedback">
+                        
+                {{ $message }}
+                        
+            </span>
+        @enderror
 <div class="input-group mb-3">
-<input type="password" class="form-control" placeholder="Password">
+<input type="password" name="password" id="password" class="form-control" placeholder="Password">
 <div class="input-group-append">
 <div class="input-group-text">
 <span class="fas fa-lock"></span>
 </div>
 </div>
 </div>
+    @error('password')
+                <span class="text-red invalid feedback">
+                            
+                    {{ $message }}
+                            
+                </span>
+    @enderror
 <div class="row">
 <div class="col-8">
 <div class="icheck-primary">
@@ -65,13 +86,13 @@ Remember Me
 <a href="#">I forgot my password</a>
 </p>
 <p class="mb-0">
-<router-link to="/login" class="text-center">Register a new membership</router-link>
+
+<a href="/register" class="text-center">Register a new membership</a>
 </p>
 </div>
 
-</div> -->
+</div>
 
-<router-view></router-view>
 
 </div>
 

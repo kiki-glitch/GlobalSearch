@@ -16,42 +16,73 @@
 <div class="register-logo">
 <a href="#"><b>Admin</b>LTE</a>
 </div>
-<!-- <div class="card">
+<div class="card">
     <div class="card-body register-card-body">
     <p class="login-box-msg">Register a new membership</p>
-    <form action="../../index.html" method="post">
+    <form action="{{ route('register') }}" method="post">
+        @csrf
     <div class="input-group mb-3">
-    <input type="text" class="form-control" placeholder="Full name">
+    <input name="name" id="name" type="text" class="form-control" placeholder="Full name" value="{{ old('name')}}">
     <div class="input-group-append">
     <div class="input-group-text">
     <span class="fas fa-user"></span>
     </div>
     </div>
     </div>
+        @error('name')
+        <span class="text-red invalid feedback">
+                    
+                    {{ $message }}
+                    
+            </span>
+        @enderror
     <div class="input-group mb-3">
-    <input type="email" class="form-control" placeholder="Email">
+    <input name="email" id="email" type="email" class="form-control" placeholder="Email" value="{{ old('email')}}">
     <div class="input-group-append">
     <div class="input-group-text">
     <span class="fas fa-envelope"></span>
     </div>
     </div>
     </div>
+            @error('email')
+            <span class=" text-red invalid feedback">
+                    
+                    {{ $message }}
+                    
+            </span>
+            @enderror
+
+
     <div class="input-group mb-3">
-    <input type="password" class="form-control" placeholder="Password">
+    <input name="password" id="password" type="password" class="form-control" placeholder="Password" value="{{ old('password')}}">
     <div class="input-group-append">
     <div class="input-group-text">
     <span class="fas fa-lock"></span>
     </div>
     </div>
     </div>
+        @error('password')
+            <span class="text-red invalid feedback">
+                        
+                {{ $message }}
+                        
+            </span>
+        @enderror
     <div class="input-group mb-3">
-    <input type="password" class="form-control" placeholder="Retype password">
+    <input name="password_confirmation" id="password_confirmation" type="password" class="form-control" placeholder="Retype password" value="">
     <div class="input-group-append">
     <div class="input-group-text">
     <span class="fas fa-lock"></span>
     </div>
     </div>
     </div>
+            @error('password_confirmation')
+            <span class="invalid feedback">
+                    
+                    {{ $message }}
+                    
+            </span>
+            @enderror
     <div class="row">
     <div class="col-8">
     <div class="icheck-primary">
@@ -82,13 +113,13 @@
     </a>
     </div>
 
-<router-link to="/login" class="text-center">I already have a membership</router-link>
+<a href="/" class="text-center">I already have a membership</a>
 
 </div>
 
 
 
-</div> -->
+</div>
 
 <router-view></router-view>
 </div>

@@ -212,12 +212,14 @@ Nora Silvester
     </router-link>
     </li>
     <li class="nav-item">
-    <router-link to="#" class="nav-link">
-    <i class="nav-icon fa fa-sign-out-alt"></i>
-    <p>
-        Logout
-    </p>
-    </router-link>
+    <!-- <router-link to="#" class="nav-link"> -->
+        <a href="{{ route('logout') }}" class="nav-link">
+            <i class="nav-icon fa fa-sign-out-alt"></i>
+            <p>
+                Logout
+            </p>
+        </a>
+    <!-- </router-link> -->
     </li>
     </ul>
 
