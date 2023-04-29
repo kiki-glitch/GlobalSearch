@@ -12,8 +12,14 @@
     "dependencies": {
         "@vitejs/plugin-vue": "^4.1.0",
         "admin-lte": "3.2",
+        "jquery": "^3.6.4",
+        "laravel-vue-pagination": "^4.1.0",
+        "lodash": "^4.17.21",
+        "moment": "^2.29.4",
+        "vee-validate": "^4.8.6",
         "vue": "^3.2.36",
         "vue-loader": "^17.0.1",
-        "vue-router": "^4.1.6"
+        "vue-router": "^4.1.6",
+        "yup": "^1.1.1"
     }
 }

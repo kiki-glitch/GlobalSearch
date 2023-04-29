@@ -46,4 +46,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Ticket::class);
     }
+      
+    // protected $appends = [
+    //     'formatted_created_at', 
+    // ];
+
+    // public function getFormattedCreatedAtAttribute()
+    // {
+    //     return $this->created_at->format(config('app.date_format'));
+    // }
 }
